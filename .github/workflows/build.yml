@@ -8,6 +8,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
+          python3 -c '
+          p = "ht" + "tps://"
+          s = p + "img.shields.io/github"
+          r = "djdidas250-lab/MatrixCityLiveWallpaper"
+          g = p + "://github.com" + r + "/releases"
+          dl = g + "/download/v18.0/app-debug.apk"
+          md = (
+              "# Matrix 3D Live Wallpaper\n"
+              "**Developer:** Dj DiD@S (`-H@CK the PL@NET-`)\n\n"
+              f"[![APK Downloads]({s}/downloads/{r}/total?color=00ff55&label=APK%20Downloads&style=for-the-badge)]({dl}) "
+              f"[![Version]({s}/v/release/{r}?color=00cc44&label=Version&style=for-the-badge)]({dl})\n\n"
+              f"👉 **[Download Latest APK (Matrix 3D Releases)]({dl})**\n\n"
+              "A smooth, hardware-accelerated 3D digital rain live wallpaper for Android (8.0+) featuring extruded 3D glyphs, 360° perspective motion tracking, interactive touch physics, and full real-time customization.\n\n"
+              "### Features & Controls\n"
+              "* **6 Color Themes:** Matrix Green, Cyber Cyan, Crimson Red, Solar Gold, Ultraviolet, and Rainbow Prism.\n"
+              "* **Real-Time Sliders:** Fall Speed, 3D Glyph Scale, Stream Density, Effect Intensity, and Bloom & Bokeh.\n"
+              "* **Interactive Toggles:** Lens Bloom & Bokeh, Touch 3D Vortex & Surge, Fold-Adaptive FOV, 3-Axis Rotation Tilt, and Fly-Out 3D Glyphs.\n\n"
+              "### Download & Install\n"
+              f"1. Tap the download link or either green badge above (or go to **[Releases]({g})**) and download **`app-debug.apk`**.\n"
+              "2. Open the file on your Android phone and allow installation from your browser or Files app if prompted.\n"
+              "3. Open **Matrix 3D**, customize your settings, and tap **Set 3D Wallpaper**.\n"
+          )
+          open("README.md", "w").write(md)
+          '
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add README.md
+          git diff --cached --quiet || (git commit -m "Update-README" && git push)
           mkdir -p app/src/main/java/c/m app/src/main/res/xml app/src/main/res/values app/src/main/res/drawable
           echo 'pluginManagement{repositories{google();mavenCentral();gradlePluginPortal()}};dependencyResolutionManagement{repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS);repositories{google();mavenCentral()}};include ":app"' > settings.gradle
           echo 'plugins{id "com.android.application" version "8.2.2" apply false;id "org.jetbrains.kotlin.android" version "1.9.22" apply false}' > build.gradle
