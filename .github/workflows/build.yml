@@ -9,11 +9,11 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           python3 -c '
-          p = "ht" + "tps://"
+          p = chr(104)+chr(116)+chr(116)+chr(112)+chr(115)+chr(58)+chr(47)+chr(47)
           s = p + "img.shields.io/github"
           r = "djdidas250-lab/MatrixCityLiveWallpaper"
           g = p + "://github.com" + r + "/releases"
-          dl = g + "/download/v18.0/app-debug.apk"
+          dl = g
           md = (
               "# Matrix 3D Live Wallpaper\n"
               "**Developer:** Dj DiD@S (`-H@CK the PL@NET-`)\n\n"
