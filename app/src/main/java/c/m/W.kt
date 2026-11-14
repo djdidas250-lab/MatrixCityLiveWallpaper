@@ -3,16 +3,16 @@ import android.content.Context;import android.graphics.*;import android.hardware
 class W:WallpaperService(){override fun onCreateEngine()=E();inner class E:Engine(),SensorEventListener,Choreographer.FrameCallback{
 var vis=false;var w=0;var ht=0;var bSz=42f;var ml=1.2f;var dns=85;var th=-1;var inten=0.65f;var blm=0.35f
 var f1=true;var f2=true;var f3=true;var f4=true;var f5=true;var tx=-1f;var ty=-1f;var tDown=false;var wR=0f;var wX=-1f;var wY=-1f
-@Volatile var rYw=0f;@Volatile var rPt=0f;@Volatile var hasRot=false
-var baseYw=0f;var autoYw=0f;var yw=0f;var pt=0f;var lf=0L;var flyT=0.25f
-val rotM=FloatArray(9);val ori=FloatArray(3);var sThread:HandlerThread?=null;var sHandler:Handler?=null
+@Volatile var rYw=0f;@Volatile var rPt=0f;var lastAz=0f;var hasRot=false
+var autoYw=0f;var sYw=0f;var yw=0f;var sPt=0f;var pt=0f;var lf=0L;var flyT=0.25f
+val rotM=FloatArray(9);var sThread:HandlerThread?=null;var sHandler:Handler?=null
 val sm by lazy{getSystemService(Context.SENSOR_SERVICE) as SensorManager}
 var cols=ArrayList<Col>();val flies=Array(10){Fly(0f,0f,0f,0f,0,false)}
 var spG=ArrayList<Bitmap>();var spW=ArrayList<Bitmap>();var bBmp:Bitmap?=null
 val p=Paint(3);val pN=Paint(1).apply{strokeWidth=3.5f;style=Paint.Style.STROKE};val dst=RectF()
 fun cfg(){val pr=getSharedPreferences("m",0);bSz=pr.getInt("sz",42).toFloat();ml=pr.getInt("sp",12)/10f;inten=pr.getInt("in",65)/100f;blm=pr.getInt("bl",35)/100f;val nd=pr.getInt("dn",85);f1=pr.getBoolean("f1",true);f2=pr.getBoolean("f2",true);f3=pr.getBoolean("f3",true);f4=pr.getBoolean("f4",true);f5=pr.getBoolean("f5",true);val nt=pr.getInt("th",0);if(nt!=th){th=nt;bBmp=M.mkBloom(M.tc(th,0));M.mkSprites(th,spG,spW)};if(nd!=dns||cols.isEmpty()){dns=nd;init()}}
 fun init(){cols.clear();for(i in 0 until dns){val a=i*2.3999632f+Random.nextFloat()*0.15f;val rd=0.30f+sqrt((i+0.5f)/dns)*1.52f;cols.add(Col(cos(a)*rd,sin(a)*rd,Random.nextFloat()*-55f,0.26f+Random.nextFloat()*0.26f,Random.nextInt(10,22),0f,0f,0f,0f,IntArray(100){Random.nextInt(M.CH.length)}))}}
-override fun onSensorChanged(e:SensorEvent){if(!f4)return;if(e.sensor.type==Sensor.TYPE_GAME_ROTATION_VECTOR||e.sensor.type==Sensor.TYPE_ROTATION_VECTOR){SensorManager.getRotationMatrixFromVector(rotM,e.values);SensorManager.getOrientation(rotM,ori);val az=ori.component1();val pitch=ori.component2();if(!hasRot){baseYw=az;hasRot=true};rYw=az-baseYw;rPt=((pitch+0.78f)*0.55f).coerceIn(-0.45f,0.45f)}else if(e.sensor.type==Sensor.TYPE_ACCELEROMETER){val gx=e.values.component1();val gy=e.values.component2();rYw+=-gx*0.0025f;rPt=((gy-6.5f)*0.065f).coerceIn(-0.45f,0.45f)}}
+override fun onSensorChanged(e:SensorEvent){if(!f4)return;if(e.sensor.type==Sensor.TYPE_GAME_ROTATION_VECTOR||e.sensor.type==Sensor.TYPE_ROTATION_VECTOR){SensorManager.getRotationMatrixFromVector(rotM,e.values);val r1=rotM.get(1);val r2=rotM.get(2);val r4=rotM.get(4);val r5=rotM.get(5);val r8=rotM.get(8);val curAz=if(r2*r2+r5*r5>0.04f)atan2(r2,r5)else atan2(r1,r4);if(!hasRot){lastAz=curAz;hasRot=true};var d=curAz-lastAz;while(d>3.1415927f)d-=6.2831853f;while(d<-3.1415927f)d+=6.2831853f;rYw+=d;lastAz=curAz;rPt=((r8-0.35f)*0.65f).coerceIn(-0.45f,0.45f)}else if(e.sensor.type==Sensor.TYPE_ACCELEROMETER){val gx=e.values.component1();val gy=e.values.component2();rYw+=-gx*0.0025f;rPt=((gy-6.5f)*0.065f).coerceIn(-0.45f,0.45f)}}
 override fun onAccuracyChanged(s:Sensor?,a:Int){}
 override fun onTouchEvent(e:MotionEvent){if(f2)when(e.actionMasked){0->{tx=e.x;ty=e.y;tDown=true;wX=e.x;wY=e.y;wR=18f};2->{tx=e.x;ty=e.y;tDown=true};1,3->tDown=false};super.onTouchEvent(e)}
 override fun onCommand(a:String?,x:Int,y:Int,z:Int,ex:Bundle?,r:Boolean):Bundle?{if(f2&&a=="android.wallpaper.tap"){wX=x.toFloat();wY=y.toFloat();wR=20f};return super.onCommand(a,x,y,z,ex,r)}
@@ -22,7 +22,7 @@ override fun onSurfaceDestroyed(hl:SurfaceHolder){super.onSurfaceDestroyed(hl);v
 override fun doFrame(frameTimeNanos:Long){if(!vis)return;dw(frameTimeNanos);Choreographer.getInstance().postFrameCallback(this)}
 fun dw(now:Long){if(spG.isEmpty()||w<=0||ht<=0)return;val dt=if(lf==0L)0.016667f else((now-lf)*1e-9f).coerceIn(0.004f,0.033f);lf=now;val st=dt*60f
 val c=if(Build.VERSION.SDK_INT>=23)surfaceHolder.lockHardwareCanvas()else surfaceHolder.lockCanvas();c?:return
-try{c.drawColor(-16777216);val gs=0.45f+inten*0.75f;val fLp=1f-0.84f.pow(st);autoYw+=0.0028f*(0.35f+inten*0.75f)*st;val tgtYw=autoYw+(if(f4)rYw*1.35f*gs else 0f);var diff=tgtYw-yw;while(diff>3.14159f)diff-=6.28318f;while(diff<-3.14159f)diff+=6.28318f;yw+=diff*fLp;pt+=((if(f4)rPt*gs else 0f)-pt)*fLp
+try{c.drawColor(-16777216);val gs=0.45f+inten*0.75f;val lp=1f-0.78f.pow(st);autoYw+=0.0028f*(0.35f+inten*0.75f)*st;val tgtYw=autoYw+(if(f4)rYw*1.35f*gs else 0f);sYw+=(tgtYw-sYw)*lp;yw+=(sYw-yw)*lp;val tgtPt=if(f4)rPt*gs else 0f;sPt+=(tgtPt-sPt)*lp;pt+=(sPt-pt)*lp
 val cy=cos(yw);val sy=sin(yw);val hw=w*0.5f;val hh=ht*0.5f;val fd=if(f3&&w>ht*0.65f)0.78f else 1f;val fov=1.40f*fd;val ac=M.tc(th,0)
 val spK=0.075f*st;val spD=0.85f.pow(st);val n=cols.size
 for(i in 0 until n){val s=cols.get(i);val pv=s.y.toInt();s.y+=s.sp*ml*(1f+s.sg)*st;s.sg*=0.92f.pow(st);s.vx+=-s.ox*spK;s.vx*=spD;s.ox+=s.vx*st;val cr=s.y.toInt();if(cr!=pv&&cr in s.gl.indices)s.gl.set(cr,Random.nextInt(M.CH.length));if(Random.nextFloat()<0.05f*st)s.gl.set(Random.nextInt(s.gl.size),Random.nextInt(M.CH.length));s.rz=s.x*sy+s.z*cy+1.88f;if((cr-s.ln)*bSz>ht*1.55f){s.y=Random.nextFloat()*-22f;s.ln=Random.nextInt(10,22)}}
