@@ -4,7 +4,7 @@ class Col(var x:Float,var z:Float,var y:Float,var sp:Float,var ln:Int,var sg:Flo
 class W:WallpaperService(){override fun onCreateEngine()=E();inner class E:Engine(),SensorEventListener,Choreographer.FrameCallback{
 var vis=false;var w=0;var ht=0;var bSz=42f;var ml=1.2f;var dns=85;var th=-1;var inten=0.65f
 var f1=true;var f2=true;var f3=true;var f4=true;var tx=-1f;var ty=-1f;var tDown=false;var wR=0f;var wX=-1f;var wY=-1f
-var yw=0f;var tPt=0f;var pt=0f;var tRl=0f;var rl=0f;var gWy=0f;var gWx=0f;var gWz=0f;var lt=0L;var lf=0L
+var tYw=0f;var yw=0f;var tPt=0f;var pt=0f;var tRl=0f;var rl=0f;var lt=0L;var lf=0L
 val sm by lazy{getSystemService(Context.SENSOR_SERVICE) as SensorManager}
 val ch="ｦｱｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789"
 var cols=ArrayList<Col>();var spG=ArrayList<Bitmap>();var spW=ArrayList<Bitmap>();var bBmp:Bitmap?=null
@@ -14,25 +14,25 @@ val dst=RectF()
 fun tc(i:Int)=intArrayOf(Color.rgb(0,255,85),Color.rgb(0,240,255),Color.rgb(255,42,78),Color.rgb(255,205,0),Color.rgb(195,65,255),Color.HSVToColor(floatArrayOf((i*23f)%360f,0.95f,1f)))[th%6]
 fun cfg(){val pr=getSharedPreferences("m",0);bSz=pr.getInt("sz",42).toFloat();ml=pr.getInt("sp",12)/10f;inten=pr.getInt("in",65)/100f;val nd=pr.getInt("dn",85);f1=pr.getBoolean("f1",true);f2=pr.getBoolean("f2",true);f3=pr.getBoolean("f3",true);f4=pr.getBoolean("f4",true);val nt=pr.getInt("th",0);if(nt!=th){th=nt;mkSp()};if(nd!=dns||cols.isEmpty()){dns=nd;init()}}
 fun mkSp(){spG.clear();spW.clear();val ac=tc(0);val rA=Color.red(ac);val gA=Color.green(ac);val bA=Color.blue(ac)
-val b=Bitmap.createBitmap(160,160,Bitmap.Config.ARGB_8888);Canvas(b).drawCircle(80f,80f,80f,Paint(1).apply{shader=RadialGradient(80f,80f,80f,intArrayOf(Color.argb(145,255,255,255),Color.argb(85,rA,gA,bA),Color.argb(28,rA,gA,bA),0),floatArrayOf(0f,0.28f,0.62f,1f),Shader.TileMode.CLAMP)});bBmp=b
+val b=Bitmap.createBitmap(160,160,Bitmap.Config.ARGB_8888);Canvas(b).drawCircle(80f,80f,80f,Paint(1).apply{shader=RadialGradient(80f,80f,80f,intArrayOf(Color.argb(145,255,255,255),Color.argb(85,rA,gA,bA),Color.argb(28,rA,gA,bA),0),floatArrayOf(0f,0.28f,0.62f,1f),Shader.TileMode.CLAMP)});b.prepareToDraw();bBmp=b
 val tp=Paint(129).apply{typeface=Typeface.MONOSPACE;isFakeBoldText=true;textSize=66f;textAlign=Paint.Align.CENTER}
 for(i in ch.indices){val g=ch[i].toString();val bs=tc(i);val r=Color.red(bs);val gr=Color.green(bs);val bl=Color.blue(bs)
 for(w1 in 0..1){val bm=Bitmap.createBitmap(96,96,Bitmap.Config.ARGB_8888);val cv=Canvas(bm)
 for(d in 11 downTo 1){val k=0.14f+(1f-d/11f)*0.42f;tp.color=if(w1==1)Color.rgb((45+r*k).toInt().coerceAtMost(255),(45+gr*k).toInt().coerceAtMost(255),(45+bl*k).toInt().coerceAtMost(255))else Color.rgb((r*k*0.6f).toInt(),(gr*k*0.6f).toInt(),(bl*k*0.6f).toInt());cv.drawText(g,48f+d*1.45f,70f+d*1.45f,tp)}
 tp.color=if(w1==1)Color.argb(210,255,255,255)else Color.argb(180,(r+70).coerceAtMost(255),(gr+70).coerceAtMost(255),(bl+70).coerceAtMost(255));cv.drawText(g,47.2f,69.2f,tp)
-tp.color=if(w1==1)-1 else bs;cv.drawText(g,48f,70f,tp);if(w1==1)spW.add(bm)else spG.add(bm)}}}
+tp.color=if(w1==1)-1 else bs;cv.drawText(g,48f,70f,tp);bm.prepareToDraw();if(w1==1)spW.add(bm)else spG.add(bm)}}}
 fun init(){cols.clear();for(i in 0 until dns){val a=i*2.3999632f+Random.nextFloat()*0.15f;val rd=0.30f+sqrt((i+0.5f)/dns)*1.52f;cols.add(Col(cos(a)*rd,sin(a)*rd,Random.nextFloat()*-55f,0.26f+Random.nextFloat()*0.26f,Random.nextInt(10,22),0f,0f,0f,0f,IntArray(100){Random.nextInt(ch.length)}))}}
-override fun onSensorChanged(e:SensorEvent){if(!f4)return;if(e.sensor.type==Sensor.TYPE_GYROSCOPE){val wy=e.values.getOrElse(1){0f};val wx=e.values.getOrElse(0){0f};val wz=e.values.getOrElse(2){0f};gWy+=(wy-gWy)*0.35f;gWx+=(wx-gWx)*0.35f;gWz+=(wz-gWz)*0.35f;if(lt!=0L){val dt=((e.timestamp-lt)*1e-9f).coerceIn(0f,0.05f);val gs=0.45f+inten*0.75f;yw+=gWy*dt*1.55f*gs;tPt=(tPt+gWx*dt*1.15f*gs).coerceIn(-0.75f,0.75f);tRl=(tRl+gWz*dt*0.42f*gs).coerceIn(-0.28f,0.28f)};lt=e.timestamp}else if(e.sensor.type==Sensor.TYPE_ACCELEROMETER)yw+=-e.values.getOrElse(0){0f}*0.002f*inten}
+override fun onSensorChanged(e:SensorEvent){if(!f4)return;if(e.sensor.type==Sensor.TYPE_GYROSCOPE){if(lt!=0L){val dt=((e.timestamp-lt)*1e-9f).coerceIn(0f,0.035f);val gs=0.45f+inten*0.75f;tYw+=e.values.getOrElse(1){0f}*dt*1.65f*gs;tPt=(tPt+e.values.getOrElse(0){0f}*dt*1.25f*gs).coerceIn(-0.78f,0.78f);tRl=(tRl+e.values.getOrElse(2){0f}*dt*0.45f*gs).coerceIn(-0.30f,0.30f)};lt=e.timestamp}else if(e.sensor.type==Sensor.TYPE_ACCELEROMETER)tYw+=-e.values.getOrElse(0){0f}*0.002f*inten}
 override fun onAccuracyChanged(s:Sensor?,a:Int){}
 override fun onTouchEvent(e:MotionEvent){if(f2)when(e.actionMasked){0->{tx=e.x;ty=e.y;tDown=true;wX=e.x;wY=e.y;wR=18f};2->{tx=e.x;ty=e.y;tDown=true};1,3->tDown=false};super.onTouchEvent(e)}
 override fun onCommand(a:String?,x:Int,y:Int,z:Int,ex:Bundle?,r:Boolean):Bundle?{if(f2&&a=="android.wallpaper.tap"){wX=x.toFloat();wY=y.toFloat();wR=20f};return super.onCommand(a,x,y,z,ex,r)}
 override fun onSurfaceChanged(hl:SurfaceHolder,f:Int,w:Int,ht:Int){super.onSurfaceChanged(hl,f,w,ht);this.w=w;this.ht=ht;cfg()}
-override fun onVisibilityChanged(v:Boolean){super.onVisibilityChanged(v);vis=v;lt=0L;lf=0L;gWy=0f;gWx=0f;gWz=0f;if(v){cfg();try{val gy=sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);if(gy!=null)sm.registerListener(this,gy,SensorManager.SENSOR_DELAY_GAME)else sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.let{sm.registerListener(this,it,SensorManager.SENSOR_DELAY_GAME)}}catch(_:Exception){};Choreographer.getInstance().postFrameCallback(this)}else{sm.unregisterListener(this);Choreographer.getInstance().removeFrameCallback(this)}}
+override fun onVisibilityChanged(v:Boolean){super.onVisibilityChanged(v);vis=v;lt=0L;lf=0L;if(v){cfg();try{val gy=sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);if(gy!=null)sm.registerListener(this,gy,SensorManager.SENSOR_DELAY_GAME)else sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.let{sm.registerListener(this,it,SensorManager.SENSOR_DELAY_GAME)}}catch(_:Exception){};Choreographer.getInstance().postFrameCallback(this)}else{sm.unregisterListener(this);Choreographer.getInstance().removeFrameCallback(this)}}
 override fun onSurfaceDestroyed(hl:SurfaceHolder){super.onSurfaceDestroyed(hl);vis=false;sm.unregisterListener(this);Choreographer.getInstance().removeFrameCallback(this)}
 override fun doFrame(frameTimeNanos:Long){if(!vis)return;dw(frameTimeNanos);Choreographer.getInstance().postFrameCallback(this)}
-fun dw(now:Long){if(spG.isEmpty()||w<=0||ht<=0)return;val dt=if(lf==0L)0.016f else((now-lf)*1e-9f).coerceIn(0.002f,0.04f);lf=now;val st=dt*60f
+fun dw(now:Long){if(spG.isEmpty()||w<=0||ht<=0)return;val dt=if(lf==0L)0.016f else((now-lf)*1e-9f).coerceIn(0.002f,0.035f);lf=now;val st=dt*60f
 val c=if(Build.VERSION.SDK_INT>=23)surfaceHolder.lockHardwareCanvas()else surfaceHolder.lockCanvas();c?:return
-try{c.drawColor(-16777216);yw+=0.0028f*(0.35f+inten*0.75f)*st;val lp=1f-0.86f.pow(st);pt+=(tPt-pt)*lp;rl+=(tRl-rl)*lp;tPt*=0.985f.pow(st);tRl*=0.98f.pow(st)
+try{c.drawColor(-16777216);tYw+=0.0028f*(0.35f+inten*0.75f)*st;val lp=1f-0.82f.pow(st);yw+=(tYw-yw)*lp;pt+=(tPt-pt)*lp;rl+=(tRl-rl)*lp;tPt*=0.985f.pow(st);tRl*=0.98f.pow(st)
 val cy=cos(yw);val sy=sin(yw);val hw=w*0.5f;val hh=ht*0.5f;val fd=if(f3&&w>ht*0.65f)0.78f else 1f;val fov=1.40f*fd;val ac=tc(0)
 if(f4&&abs(rl)>0.001f){c.save();c.rotate(Math.toDegrees(rl.toDouble()).toFloat(),hw,hh)}
 val spK=0.075f*st;val spD=0.85f.pow(st)
