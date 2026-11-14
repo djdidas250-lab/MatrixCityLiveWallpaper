@@ -1,7 +1,7 @@
 # Matrix 3D Live Wallpaper
 **Developer:** Dj DiD@S (`-H@CK the PL@NET-`)
 
-[![APK Downloads](https://shields.io)](../../releases/download/v18.0/app-debug.apk) [![Version](https://shields.io)](../../releases/download/v18.0/app-debug.apk)
+[![APK Downloads](https://img.shields.io/github/downloads/djdidas250-lab/MatrixCityLiveWallpaper/total?color=00ff55&label=APK%20Downloads&style=for-the-badge)](../../releases/download/v18.0/app-debug.apk) [![Version](https://img.shields.io/github/v/release/djdidas250-lab/MatrixCityLiveWallpaper?color=00cc44&label=Version&style=for-the-badge)](../../releases/download/v18.0/app-debug.apk)
 
 👉 **[Download Latest APK (Matrix 3D Releases)](../../releases/download/v18.0/app-debug.apk)**
 
