@@ -3,7 +3,7 @@
 
 [![APK Downloads](https://shields.io)](https://github.com) [![Version](https://shields.io)](https://github.com)
 
-👉 **[Download Latest APK (Matrix 3D Releases)](https://github.com/latest/download/app-debug.apk)**
+👉 **[Download Latest APK (Matrix 3D Releases)](https://github.com)**
 
 A smooth, hardware-accelerated 3D digital rain live wallpaper for Android (8.0+) featuring extruded 3D glyphs, 360° perspective motion tracking, interactive touch physics, and full real-time customization.
 
