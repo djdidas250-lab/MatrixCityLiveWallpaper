@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://android.com">
+<!DOCTYPE manifest [<!ENTITY u "http://android.com">]>
+<manifest xmlns:android="&u;">
     <uses-feature android:name="android.software.live_wallpaper" android:required="true" />
     <application android:icon="@drawable/ic" android:label="@string/n">
         <activity android:name=".MainActivity" android:exported="true">
