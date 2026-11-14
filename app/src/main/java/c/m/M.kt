@@ -19,7 +19,7 @@ object M {
         val rA = Color.red(ac); val gA = Color.green(ac); val bA = Color.blue(ac)
         val b = Bitmap.createBitmap(160, 160, Bitmap.Config.ARGB_8888)
         Canvas(b).drawCircle(80f, 80f, 80f, Paint(1).apply {
-            shader = RadialGradient(80f, 80f, 80f, intArrayOf(Color.argb(230, 255, 255, 255), Color.argb(150, rA, gA, bA), Color.argb(45, rA, gA, bA), 0), floatArrayOf(0f, 0.30f, 0.65f, 1f), Shader.TileMode.CLAMP)
+            shader = RadialGradient(80f, 80f, 80f, intArrayOf(Color.argb(225, 255, 255, 255), Color.argb(145, rA, gA, bA), Color.argb(40, rA, gA, bA), 0), floatArrayOf(0f, 0.28f, 0.62f, 1f), Shader.TileMode.CLAMP)
         })
         return b
     }
@@ -31,17 +31,17 @@ object M {
             val g = CH.elementAt(i).toString(); val bs = tc(th, i)
             val r = Color.red(bs); val gr = Color.green(bs); val bl = Color.blue(bs)
             for (w1 in 0..1) {
-                val bm = Bitmap.createBitmap(92, 92, Bitmap.Config.ARGB_8888); val cv = Canvas(bm)
-                for (d in 10 downTo 1) {
-                    val k = 0.14f + (1f - d / 10f) * 0.42f
+                val bm = Bitmap.createBitmap(96, 96, Bitmap.Config.ARGB_8888); val cv = Canvas(bm)
+                for (d in 11 downTo 1) {
+                    val k = 0.12f + (1f - d / 11f) * 0.44f
                     tp.color = if (w1 == 1) Color.rgb((45 + r * k).toInt().coerceAtMost(255), (45 + gr * k).toInt().coerceAtMost(255), (45 + bl * k).toInt().coerceAtMost(255))
-                    else Color.rgb((r * k * 0.6f).toInt(), (gr * k * 0.6f).toInt(), (bl * k * 0.6f).toInt())
-                    cv.drawText(g, 46f + d * 1.4f, 67f + d * 1.4f, tp)
+                    else Color.rgb((r * k * 0.58f).toInt(), (gr * k * 0.58f).toInt(), (bl * k * 0.58f).toInt())
+                    cv.drawText(g, 48f + d * 1.45f, 70f + d * 1.45f, tp)
                 }
-                tp.color = if (w1 == 1) Color.argb(210, 255, 255, 255) else Color.argb(180, (r + 70).coerceAtMost(255), (gr + 70).coerceAtMost(255), (bl + 70).coerceAtMost(255))
-                cv.drawText(g, 45.2f, 66.2f, tp)
+                tp.color = if (w1 == 1) Color.argb(220, 255, 255, 255) else Color.argb(190, (r + 75).coerceAtMost(255), (gr + 75).coerceAtMost(255), (bl + 75).coerceAtMost(255))
+                cv.drawText(g, 47.2f, 69.2f, tp)
                 tp.color = if (w1 == 1) -1 else bs
-                cv.drawText(g, 46f, 67f, tp)
+                cv.drawText(g, 48f, 70f, tp)
                 if (w1 == 1) spW.add(bm) else spG.add(bm)
             }
         }
