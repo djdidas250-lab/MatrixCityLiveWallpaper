@@ -6,16 +6,20 @@ class Fly(var x: Float, var y: Float, var z: Float, var vz: Float, var gl: Int, 
 
 object M {
     const val CH = "ｦｱｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789"
-    fun tc(th: Int, i: Int) = intArrayOf(
-        Color.rgb(0, 255, 85), Color.rgb(0, 240, 255), Color.rgb(255, 42, 78),
-        Color.rgb(255, 205, 0), Color.rgb(195, 65, 255), Color.HSVToColor(floatArrayOf((i * 23f) % 360f, 0.95f, 1f))
-    )[th % 6]
+    fun tc(th: Int, i: Int) = when (th % 6) {
+        0 -> Color.rgb(0, 255, 85)
+        1 -> Color.rgb(0, 240, 255)
+        2 -> Color.rgb(255, 42, 78)
+        3 -> Color.rgb(255, 205, 0)
+        4 -> Color.rgb(195, 65, 255)
+        else -> Color.HSVToColor(floatArrayOf((i * 23f) % 360f, 0.95f, 1f))
+    }
 
     fun mkBloom(ac: Int): Bitmap {
         val rA = Color.red(ac); val gA = Color.green(ac); val bA = Color.blue(ac)
         val b = Bitmap.createBitmap(160, 160, Bitmap.Config.ARGB_8888)
         Canvas(b).drawCircle(80f, 80f, 80f, Paint(1).apply {
-            shader = RadialGradient(80f, 80f, 80f, intArrayOf(Color.argb(190, 255, 255, 255), Color.argb(115, rA, gA, bA), Color.argb(35, rA, gA, bA), 0), floatArrayOf(0f, 0.30f, 0.65f, 1f), Shader.TileMode.CLAMP)
+            shader = RadialGradient(80f, 80f, 80f, intArrayOf(Color.argb(230, 255, 255, 255), Color.argb(150, rA, gA, bA), Color.argb(45, rA, gA, bA), 0), floatArrayOf(0f, 0.30f, 0.65f, 1f), Shader.TileMode.CLAMP)
         })
         return b
     }
@@ -24,7 +28,7 @@ object M {
         spG.clear(); spW.clear()
         val tp = Paint(129).apply { typeface = Typeface.MONOSPACE; isFakeBoldText = true; textSize = 64f; textAlign = Paint.Align.CENTER }
         for (i in CH.indices) {
-            val g = CH[i].toString(); val bs = tc(th, i)
+            val g = CH.elementAt(i).toString(); val bs = tc(th, i)
             val r = Color.red(bs); val gr = Color.green(bs); val bl = Color.blue(bs)
             for (w1 in 0..1) {
                 val bm = Bitmap.createBitmap(92, 92, Bitmap.Config.ARGB_8888); val cv = Canvas(bm)
